@@ -1,88 +1,119 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/images/memehub-logo.svg" alt="MemeHub Logo" width="520" />
 </p>
 
-## About Laravel
+<h1 align="center">MemeHub</h1>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  Platform berbagi meme berbasis Laravel dengan Google Login, upload media, report system, dan panel moderasi admin.
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ✨ Fitur Utama
 
-## MemeHub Authentication (Google Only)
+- Google OAuth login (tanpa registrasi manual/password)
+- Upload meme (gambar/video) + tags
+- Upvote, komentar, bookmark, follow user
+- Report postingan meme (untuk user login)
+- Contact/report form internal dengan upload screenshot
+- Admin moderasi laporan konten
+- Dukungan multi-bahasa (Indonesia / English)
 
-MemeHub now uses Google OAuth for sign-in/sign-up.
+## 🧱 Tech Stack
 
-1. Set these variables in `.env`:
-	- `GOOGLE_CLIENT_ID`
-	- `GOOGLE_CLIENT_SECRET`
-	- `GOOGLE_REDIRECT_URI` (default: `${APP_URL}/auth/google/callback`)
-2. In Google Cloud Console, add the same redirect URI to OAuth credentials.
-3. Run database migration:
+- Laravel 10
+- Blade + Tailwind CSS + Alpine.js
+- MySQL / MariaDB
+- Laravel Socialite (Google OAuth)
+
+## 🚀 Quick Start (Local)
+
+1) Clone repository
+
+```bash
+git clone https://github.com/Pashinoh/memehub.git
+cd memehub
+```
+
+2) Install dependency
+
+```bash
+composer install
+npm install
+```
+
+3) Setup environment
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4) Sesuaikan `.env`
+
+- `APP_URL`
+- `DB_*`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `GOOGLE_REDIRECT_URI` (default: `${APP_URL}/auth/google/callback`)
+- `ADMIN_EMAILS` (contoh: `ADMIN_EMAILS=admin@gmail.com`)
+
+5) Migrasi + build asset
 
 ```bash
 php artisan migrate
+npm run build
 ```
 
-Available auth routes:
-- `/login`
-- `/auth/google/redirect`
-- `/auth/google/callback`
+6) Jalankan aplikasi
 
-Legacy email verification and password-reset flow has been removed.
+```bash
+php artisan serve
+```
 
-## Learning Laravel
+## 🔐 Google OAuth Setup
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Tambahkan Authorized redirect URI di Google Cloud Console:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```text
+https://your-domain.com/auth/google/callback
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Contoh production saat ini:
 
-## Laravel Sponsors
+```text
+https://shinz.my.id/auth/google/callback
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🌍 Deployment Notes
 
-### Premium Partners
+- Gunakan `APP_ENV=production` dan `APP_DEBUG=false`
+- Pastikan folder `storage` dan `bootstrap/cache` writable
+- Jalankan:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```bash
+php artisan optimize:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
 
-## Contributing
+- Buat symlink storage:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+php artisan storage:link
+```
 
-## Code of Conduct
+## 📁 Struktur Penting
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- `app/Http/Controllers/Auth/GoogleAuthController.php` → login Google
+- `app/Http/Controllers/ReportController.php` → report meme
+- `app/Http/Controllers/Admin/ReportModerationController.php` → moderasi admin
+- `app/Http/Controllers/ContactController.php` → contact/report form + screenshot
+- `resources/views/memes/index.blade.php` → feed utama & upload modal
+- `resources/views/admin/reports/index.blade.php` → UI moderasi
 
-## Security Vulnerabilities
+## 📄 License
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Project ini menggunakan lisensi [MIT](LICENSE).

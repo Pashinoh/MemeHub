@@ -1,0 +1,24 @@
+<svg width="640" height="180" viewBox="0 0 640 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E11D48"/>
+      <stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="2" width="636" height="176" rx="28" fill="url(#bg)" stroke="#334155" stroke-width="3"/>
+
+  <g transform="translate(34 34)">
+    <rect width="112" height="112" rx="24" fill="url(#accent)"/>
+    <circle cx="40" cy="46" r="10" fill="#FFF"/>
+    <circle cx="72" cy="46" r="10" fill="#FFF"/>
+    <path d="M28 74C33 85 43 92 56 92C69 92 79 85 84 74" stroke="#FFF" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <text x="170" y="88" fill="#F8FAFC" font-size="54" font-family="Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="1">MemeHub</text>
+  <text x="170" y="123" fill="#94A3B8" font-size="20" font-family="Segoe UI, Arial, sans-serif">Drop memes, get laughs.</text>
+</svg>
