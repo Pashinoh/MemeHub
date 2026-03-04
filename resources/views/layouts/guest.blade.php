@@ -10,7 +10,9 @@
             localStorage.setItem('theme', 'dark');
         </script>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>MemeHub</title>
+        <link rel="icon" type="image/svg+xml" href="{{ asset('images/memehub-icon.svg') }}">
+        <link rel="shortcut icon" href="{{ asset('images/memehub-icon.svg') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
