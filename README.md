@@ -4,15 +4,15 @@
 
 # MemeHub
 
-Platform berbagi meme berbasis Laravel dengan Google Login, upload media, report system, dan moderasi admin.
+A Laravel-based meme-sharing platform with Google Login, media uploads, reporting workflow, and admin moderation.
 
-Versi saat ini: `v1.3.0`
+Current version: `v1.3.0`
 
 ## Documentation
 
-- Panduan install lengkap: [INSTALLATION.md](INSTALLATION.md)
-- Riwayat perubahan: [CHANGELOG.md](CHANGELOG.md)
+- Installation guide: [GitHub Wiki - Installation](https://github.com/Pashinoh/memehub/wiki/Installation)
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
 
 ## License
 
-Project ini menggunakan lisensi [MIT](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
