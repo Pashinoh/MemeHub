@@ -47,4 +47,8 @@ return [
         'admin_emails' => array_values(array_filter(array_map('trim', explode(',', (string) env('ADMIN_EMAILS', ''))))),
     ],
 
+    'ffmpeg' => [
+        'bin' => env('FFMPEG_BIN', 'ffmpeg'),
+    ],
+
 ];

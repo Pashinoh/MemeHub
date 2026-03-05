@@ -13,7 +13,9 @@
         <article class="mx-auto max-w-[680px] overflow-hidden rounded-lg border border-slate-700 bg-slate-900 shadow-sm">
             <div class="relative mx-auto flex h-[440px] w-[440px] max-w-full items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-800">
                 @if ($meme->isVideo())
-                    <video src="{{ asset('storage/' . $meme->image_path) }}" class="block h-full w-full object-contain object-center" data-custom-player="true" preload="metadata" playsinline oncontextmenu="return false;"></video>
+                    <video class="block h-full w-full object-contain object-center" data-custom-player="true" preload="metadata" playsinline oncontextmenu="return false;">
+                        <source src="{{ asset('storage/' . $meme->image_path) }}" type="{{ $meme->video_mime_type }}">
+                    </video>
                 @else
                     <img src="{{ asset('storage/' . $meme->image_path) }}" alt="{{ $meme->title }}" class="js-zoomable-image block h-full w-full object-cover object-center">
                 @endif
@@ -80,14 +82,49 @@
                             </form>
                         <span id="meme-score-{{ $meme->id }}" data-upvote-score class="text-sm font-semibold text-slate-700 dark:text-slate-200 w-10 text-center">{{ $meme->score }}</span>
                         @if ($meme->user_id !== auth()->id())
-                            <form action="{{ route('memes.report', $meme) }}" method="POST" class="inline">
-                                @csrf
-                                <input type="hidden" name="reason" value="other">
-                                <button type="submit" class="rounded-full border px-2 py-1 text-sm font-medium transition focus:outline-none flex items-center gap-1 bg-slate-800 border-slate-600 text-red-400 hover:bg-red-500/10 hover:border-red-600" title="Report">
+                            <div x-data="{ openReport: false, openModal() { this.openReport = true; document.body.classList.add('overflow-hidden'); }, closeModal() { this.openReport = false; document.body.classList.remove('overflow-hidden'); } }">
+                                <button type="button" @click.stop="openModal()" class="rounded-full border px-2 py-1 text-sm font-medium transition focus:outline-none flex items-center gap-1 bg-slate-800 border-slate-600 text-red-400 hover:bg-red-500/10 hover:border-red-600" title="Report">
                                     <svg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M18.364 5.636l-1.414-1.414A9 9 0 105.636 18.364l1.414 1.414A9 9 0 1018.364 5.636z' /></svg>
                                     <span class="sr-only">Report</span>
                                 </button>
-                            </form>
+
+                                <div x-show="openReport" x-transition class="fixed inset-0 z-[90] flex items-center justify-center p-4" style="display: none;">
+                                    <button type="button" class="absolute inset-0 bg-slate-950/65 backdrop-blur-sm" @click="closeModal()" aria-label="Close report popup"></button>
+                                    <div class="relative z-10 w-full max-w-sm rounded-xl border border-slate-700 bg-slate-900 p-4 shadow-2xl" @click.stop>
+                                        <div class="mb-3 flex items-center justify-between">
+                                            <p class="text-sm font-semibold text-slate-100">Report Meme</p>
+                                            <button type="button" class="rounded-md px-2 py-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200" @click="closeModal()" aria-label="Close">✕</button>
+                                        </div>
+
+                                        <form action="{{ route('memes.report', $meme) }}" method="POST" class="space-y-3">
+                                            @csrf
+                                            <div>
+                                                <label class="mb-1 block text-xs font-medium text-slate-300">Reason</label>
+                                                <select name="reason" class="w-full rounded border border-slate-700 bg-slate-950 px-2 py-2 text-sm text-slate-100" required>
+                                                    <option value="" disabled selected>Select a reason</option>
+                                                    <option value="spam">Spam</option>
+                                                    <option value="nsfw">NSFW</option>
+                                                    <option value="harassment">Harassment</option>
+                                                    <option value="hate">Hate Speech</option>
+                                                    <option value="misinformation">Misinformation</option>
+                                                    <option value="copyright">Copyright</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label class="mb-1 block text-xs font-medium text-slate-300">Details (optional)</label>
+                                                <textarea name="details" rows="3" class="w-full rounded border border-slate-700 bg-slate-950 px-2 py-2 text-sm text-slate-100" placeholder="Add additional details..."></textarea>
+                                            </div>
+
+                                            <div class="flex items-center justify-end gap-2 pt-1">
+                                                <button type="button" class="rounded border border-slate-700 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800" @click="closeModal()">Cancel</button>
+                                                <button type="submit" class="rounded bg-red-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-700">Submit Report</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         @endif
                         @if ($meme->user_id === auth()->id())
                             <form action="{{ route('memes.destroy', $meme) }}" method="POST" class="inline" data-confirm-delete="true" data-confirm-title="Delete Meme" data-confirm-message="This meme will be permanently deleted. Continue?">

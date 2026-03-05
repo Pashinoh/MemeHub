@@ -45,7 +45,7 @@
                     ];
                 @endphp
                 <!-- Logo & Title -->
-                <span class="hidden lg:inline-block text-lg font-semibold tracking-wide uppercase text-white select-none">MemeHub</span>
+                <a href="{{ route('memes.index') }}" class="hidden lg:inline-block text-lg font-semibold tracking-wide uppercase text-white hover:text-slate-200 transition">MemeHub</a>
 
                 <div class="relative lg:hidden" @click.outside="openBrand = false">
                     <button type="button" @click="openBrand = !openBrand; openSearch = false; openNotifications = false; open = false" class="flex items-center gap-1.5 rounded-md px-1 py-1 text-left select-none" aria-label="MemeHub menu" :aria-expanded="openBrand.toString()">

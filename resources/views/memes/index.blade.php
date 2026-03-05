@@ -76,8 +76,8 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Media (Image/Video)</label>
-                        <input type="file" name="image" accept="image/*,video/*" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-3 py-2 text-sm" required>
-                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Supported video formats: MP4, WebM, MOV, MKV (max 50MB).</p>
+                        <input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif,.heic,.heif,video/mp4,video/webm,video/x-m4v,video/quicktime,.mov" class="w-full rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-3 py-2 text-sm" required>
+                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Images: JPG, PNG, WEBP, GIF, HEIC/HEIF. Videos: MP4, WebM, M4V, MOV (MOV auto-converted to MP4, max 50MB).</p>
                         @error('image')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -176,7 +176,7 @@
                                 </p>
                             </div>
                             @auth
-                                <div class="relative shrink-0" x-data="{ openAction: false }" @click.outside="openAction = false">
+                                <div class="relative shrink-0" x-data="{ openAction: false, openReport: false, closeReport() { this.openReport = false; document.body.classList.remove('overflow-hidden'); } }" @click.outside="openAction = false">
                                     <button type="button" @click.stop="openAction = !openAction" class="rounded-full border border-slate-600 px-2 py-1 text-xl font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 transition focus:outline-none flex items-center justify-center" title="Menu aksi">&#8942;</button>
                                     <div x-show="openAction" x-transition @click.stop class="absolute right-0 top-full z-10 mt-2 w-48 max-w-[calc(100vw-2rem)] rounded border border-slate-700 bg-slate-900 p-2 shadow-lg" style="display: none;">
                                         <div class="flex flex-col gap-1">
@@ -198,32 +198,10 @@
                                                 </button>
                                             </form>
                                             @if ($meme->user_id !== auth()->id())
-                                                <details class="group">
-                                                    <summary class="w-full flex items-center gap-2 px-3 py-2 rounded hover:bg-red-50 text-red-600 cursor-pointer list-none">
-                                                        <svg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M18.364 5.636l-1.414-1.414A9 9 0 105.636 18.364l1.414 1.414A9 9 0 1018.364 5.636z' /></svg>
-                                                        Report
-                                                    </summary>
-                                                    <div class="mt-2 p-2 border-t border-slate-100 dark:border-slate-700">
-                                                        <form action="{{ route('memes.report', $meme) }}" method="POST" class="space-y-2">
-                                                            @csrf
-                                                            <select name="reason" class="w-full rounded border border-slate-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-2 py-1 text-xs" required>
-                                                                <option value="" disabled selected>Select a reason</option>
-                                                                <option value="spam">Spam</option>
-                                                                <option value="nsfw">NSFW</option>
-                                                                <option value="harassment">Harassment</option>
-                                                                <option value="hate">Hate Speech</option>
-                                                                <option value="misinformation">Misinformation</option>
-                                                                <option value="copyright">Copyright</option>
-                                                                <option value="other">Other</option>
-                                                            </select>
-                                                            <textarea name="details" rows="2" class="w-full rounded border border-slate-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-2 py-1 text-xs" placeholder="Details (optional)"></textarea>
-                                                            <button type="submit" class="w-full flex items-center justify-center gap-2 rounded bg-red-600 px-2 py-1 text-xs font-semibold text-white hover:bg-red-700">
-                                                                <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M18.364 5.636l-1.414-1.414A9 9 0 105.636 18.364l1.414 1.414A9 9 0 1018.364 5.636z' /></svg>
-                                                                Report
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </details>
+                                                <button type="button" @click.stop="openAction = false; openReport = true; document.body.classList.add('overflow-hidden')" class="w-full flex items-center gap-2 px-3 py-2 rounded hover:bg-red-50 text-red-600">
+                                                    <svg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M18.364 5.636l-1.414-1.414A9 9 0 105.636 18.364l1.414 1.414A9 9 0 1018.364 5.636z' /></svg>
+                                                    Report
+                                                </button>
                                             @endif
                                             @if ($meme->user_id === auth()->id())
                                                 <form action="{{ route('memes.destroy', $meme) }}" method="POST" class="mt-1" data-confirm-delete="true" data-confirm-title="Delete Meme" data-confirm-message="This meme will be permanently deleted. Continue?">
@@ -237,6 +215,47 @@
                                             @endif
                                         </div>
                                     </div>
+
+                                    @if ($meme->user_id !== auth()->id())
+                                        <template x-teleport="body">
+                                            <div x-show="openReport" x-transition class="fixed inset-0 z-[9999] flex items-center justify-center p-4" style="display: none;">
+                                                <button type="button" class="absolute inset-0 bg-slate-950/70 backdrop-blur-sm" @click="closeReport()" aria-label="Close report popup"></button>
+                                                <div class="relative z-10 w-full max-w-sm rounded-xl border border-slate-700 bg-slate-900 p-4 shadow-2xl" @click.stop>
+                                                    <div class="mb-3 flex items-center justify-between">
+                                                        <p class="text-sm font-semibold text-slate-100">Report Meme</p>
+                                                        <button type="button" class="rounded-md px-2 py-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200" @click="closeReport()" aria-label="Close">✕</button>
+                                                    </div>
+
+                                                    <form action="{{ route('memes.report', $meme) }}" method="POST" class="space-y-3">
+                                                        @csrf
+                                                        <div>
+                                                            <label class="mb-1 block text-xs font-medium text-slate-300">Reason</label>
+                                                            <select name="reason" class="w-full rounded border border-slate-700 bg-slate-950 px-2 py-2 text-sm text-slate-100" required>
+                                                                <option value="" disabled selected>Select a reason</option>
+                                                                <option value="spam">Spam</option>
+                                                                <option value="nsfw">NSFW</option>
+                                                                <option value="harassment">Harassment</option>
+                                                                <option value="hate">Hate Speech</option>
+                                                                <option value="misinformation">Misinformation</option>
+                                                                <option value="copyright">Copyright</option>
+                                                                <option value="other">Other</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div>
+                                                            <label class="mb-1 block text-xs font-medium text-slate-300">Details (optional)</label>
+                                                            <textarea name="details" rows="3" class="w-full rounded border border-slate-700 bg-slate-950 px-2 py-2 text-sm text-slate-100" placeholder="Add additional details..."></textarea>
+                                                        </div>
+
+                                                        <div class="flex items-center justify-end gap-2 pt-1">
+                                                            <button type="button" class="rounded border border-slate-700 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800" @click="closeReport()">Cancel</button>
+                                                            <button type="submit" class="rounded bg-red-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-700">Submit Report</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    @endif
                                 </div>
                             @endauth
                         </div>
@@ -244,7 +263,9 @@
 
                     <div class="relative mx-auto flex aspect-square w-full items-center justify-center overflow-hidden bg-slate-800">
                         @if ($meme->isVideo())
-                            <video src="{{ asset('storage/' . $meme->image_path) }}" class="block h-full w-full object-contain object-center" data-custom-player="true" preload="metadata" playsinline oncontextmenu="return false;"></video>
+                            <video class="block h-full w-full object-contain object-center" data-custom-player="true" preload="metadata" playsinline oncontextmenu="return false;">
+                                <source src="{{ asset('storage/' . $meme->image_path) }}" type="{{ $meme->video_mime_type }}">
+                            </video>
                         @else
                             <img src="{{ asset('storage/' . $meme->image_path) }}" alt="{{ $meme->title }}" class="js-zoomable-image block h-full w-full object-contain object-center">
                         @endif

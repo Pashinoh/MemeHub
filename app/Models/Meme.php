@@ -62,10 +62,28 @@ class Meme extends Model
         return self::isVideoPath($this->image_path);
     }
 
+    public function getVideoMimeTypeAttribute(): string
+    {
+        $extension = self::videoExtension($this->image_path);
+
+        return match ($extension) {
+            'webm' => 'video/webm',
+            'mov' => 'video/quicktime',
+            'mkv' => 'video/x-matroska',
+            'ogg' => 'video/ogg',
+            default => 'video/mp4',
+        };
+    }
+
     public static function isVideoPath(?string $path): bool
     {
-        $extension = strtolower(pathinfo((string) $path, PATHINFO_EXTENSION));
+        $extension = self::videoExtension($path);
 
         return in_array($extension, ['mp4', 'webm', 'mov', 'mkv', 'm4v', 'ogg'], true);
+    }
+
+    private static function videoExtension(?string $path): string
+    {
+        return strtolower(pathinfo((string) $path, PATHINFO_EXTENSION));
     }
 }

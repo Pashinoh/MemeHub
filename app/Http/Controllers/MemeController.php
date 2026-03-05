@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Meme;
 use App\Models\Tag;
 use App\Notifications\MemeUpvotedNotification;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Intervention\Image\Facades\Image;
+use Symfony\Component\Process\Process;
 
 class MemeController extends Controller
 {
@@ -68,15 +71,19 @@ class MemeController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:120'],
-            'image' => ['required', 'file', 'max:51200', 'mimetypes:image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/x-matroska'],
+            'image' => ['required', 'file', 'max:51200', 'mimetypes:image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif,image/heic-sequence,image/heif-sequence,video/mp4,video/webm,video/x-m4v,video/quicktime,video/x-quicktime'],
             'tags' => ['nullable', 'string', 'max:200'],
+        ], [
+            'image.mimetypes' => 'Format media tidak didukung. Gunakan JPG, PNG, WEBP, GIF, HEIC/HEIF, MP4, WebM, M4V, atau MOV.',
         ]);
 
         $upload = $request->file('image');
         $mimeType = strtolower((string) $upload->getMimeType());
+        $extension = strtolower((string) $upload->getClientOriginalExtension());
 
-        if (str_starts_with($mimeType, 'video/')) {
-            $extension = strtolower((string) $upload->getClientOriginalExtension());
+        if ($this->isMovVideo($mimeType, $extension)) {
+            $path = $this->convertMovToMp4($upload);
+        } elseif (str_starts_with($mimeType, 'video/')) {
             if ($extension === '') {
                 $extension = 'mp4';
             }
@@ -84,6 +91,8 @@ class MemeController extends Controller
             $filename = Str::uuid() . '.' . $extension;
             Storage::disk('public')->putFileAs('memes', $upload, $filename);
             $path = 'memes/' . $filename;
+        } elseif ($this->isHeicImage($mimeType, $extension)) {
+            $path = $this->convertHeicToJpg($upload);
         } else {
             $image = Image::make($upload);
             $image->resize(1600, 1200, function ($constraint) {
@@ -124,6 +133,129 @@ class MemeController extends Controller
         }
 
         return redirect()->route('memes.index')->with('status', 'Meme uploaded!');
+    }
+
+    private function isMovVideo(string $mimeType, string $extension): bool
+    {
+        return $extension === 'mov' || in_array($mimeType, ['video/quicktime', 'video/x-quicktime'], true);
+    }
+
+    private function isHeicImage(string $mimeType, string $extension): bool
+    {
+        if (in_array($extension, ['heic', 'heif'], true)) {
+            return true;
+        }
+
+        return in_array($mimeType, ['image/heic', 'image/heif', 'image/heic-sequence', 'image/heif-sequence'], true);
+    }
+
+    private function convertMovToMp4($upload): string
+    {
+        $tempOutput = tempnam(sys_get_temp_dir(), 'meme-mov-');
+        if ($tempOutput === false) {
+            throw ValidationException::withMessages([
+                'image' => 'Gagal menyiapkan file sementara untuk konversi MOV.',
+            ]);
+        }
+
+        @unlink($tempOutput);
+        $tempOutput .= '.mp4';
+
+        try {
+            $this->runFfmpeg([
+                '-y',
+                '-i',
+                (string) $upload->getRealPath(),
+                '-movflags',
+                '+faststart',
+                '-c:v',
+                'libx264',
+                '-pix_fmt',
+                'yuv420p',
+                '-vf',
+                'scale=1280:-2:force_original_aspect_ratio=decrease',
+                '-preset',
+                'veryfast',
+                '-crf',
+                '28',
+                '-c:a',
+                'aac',
+                '-b:a',
+                '96k',
+                $tempOutput,
+            ], 'Gagal mengonversi MOV ke MP4. Pastikan FFmpeg terpasang dan file tidak rusak.');
+
+            if (!is_file($tempOutput) || filesize($tempOutput) === 0) {
+                throw ValidationException::withMessages([
+                    'image' => 'Hasil konversi MOV kosong atau tidak valid.',
+                ]);
+            }
+
+            $filename = Str::uuid() . '.mp4';
+            Storage::disk('public')->putFileAs('memes', new File($tempOutput), $filename);
+
+            return 'memes/' . $filename;
+        } finally {
+            if (is_file($tempOutput)) {
+                @unlink($tempOutput);
+            }
+        }
+    }
+
+    private function convertHeicToJpg($upload): string
+    {
+        $tempOutput = tempnam(sys_get_temp_dir(), 'meme-heic-');
+        if ($tempOutput === false) {
+            throw ValidationException::withMessages([
+                'image' => 'Gagal menyiapkan file sementara untuk konversi HEIC.',
+            ]);
+        }
+
+        @unlink($tempOutput);
+        $tempOutput .= '.jpg';
+
+        try {
+            $this->runFfmpeg([
+                '-y',
+                '-i',
+                (string) $upload->getRealPath(),
+                '-frames:v',
+                '1',
+                '-q:v',
+                '2',
+                $tempOutput,
+            ], 'Gagal mengonversi HEIC/HEIF ke JPG. Pastikan FFmpeg terpasang dan file tidak rusak.');
+
+            $image = Image::make($tempOutput)->orientate();
+            $image->resize(1600, 1200, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
+            $filename = Str::uuid() . '.jpg';
+            $path = 'memes/' . $filename;
+            Storage::disk('public')->put($path, $image->encode('jpg', 60));
+
+            return $path;
+        } finally {
+            if (is_file($tempOutput)) {
+                @unlink($tempOutput);
+            }
+        }
+    }
+
+    private function runFfmpeg(array $arguments, string $failureMessage): void
+    {
+        $binary = (string) config('services.ffmpeg.bin', 'ffmpeg');
+        $process = new Process(array_merge([$binary], $arguments));
+        $process->setTimeout(180);
+        $process->run();
+
+        if (! $process->isSuccessful()) {
+            throw ValidationException::withMessages([
+                'image' => $failureMessage,
+            ]);
+        }
     }
 
     public function upvote(Meme $meme, Request $request)

@@ -75,7 +75,9 @@
                     <div class="aspect-square overflow-hidden bg-slate-700 group relative">
                         <a href="{{ route('memes.show', $meme) }}" class="block w-full h-full">
                             @if ($meme->isVideo())
-                                <video src="{{ asset('storage/' . $meme->image_path) }}" class="object-cover w-full h-full bg-slate-700" muted playsinline preload="metadata" oncontextmenu="return false;"></video>
+                                <video class="object-cover w-full h-full bg-slate-700" muted playsinline preload="metadata" oncontextmenu="return false;">
+                                    <source src="{{ asset('storage/' . $meme->image_path) }}" type="{{ $meme->video_mime_type }}">
+                                </video>
                             @else
                                 <img src="{{ asset('storage/' . $meme->image_path) }}" alt="{{ $meme->title }}" class="object-cover w-full h-full transition group-hover:scale-105 bg-slate-700" loading="lazy">
                             @endif

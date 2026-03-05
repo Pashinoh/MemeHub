@@ -37,7 +37,21 @@ class ReportController extends Controller
         ]);
 
         if (! $report->wasRecentlyCreated) {
-            return back()->with('status', 'Laporan kamu untuk meme ini sudah pernah dikirim.');
+            if ($report->status === Report::STATUS_PENDING) {
+                return back()->with('status', 'Laporan kamu untuk meme ini sudah pernah dikirim dan sedang ditinjau moderator.');
+            }
+
+            // Re-open reviewed/rejected report so it re-enters moderation queue.
+            $report->fill([
+                'reason' => $validated['reason'],
+                'details' => $validated['details'] ?? null,
+                'status' => Report::STATUS_PENDING,
+                'reviewed_by' => null,
+                'reviewed_at' => null,
+                'moderator_note' => null,
+            ])->save();
+
+            return back()->with('status', 'Laporan berhasil dikirim ulang dan masuk antrean moderasi.');
         }
 
         return back()->with('status', 'Terima kasih, laporan berhasil dikirim.');

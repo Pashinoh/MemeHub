@@ -42,7 +42,9 @@
 
                     <div class="relative mx-auto flex aspect-square w-full items-center justify-center overflow-hidden bg-slate-800">
                         @if ($meme->isVideo())
-                            <video src="{{ asset('storage/' . $meme->image_path) }}" class="block h-full w-full object-contain object-center" data-custom-player="true" preload="metadata" playsinline oncontextmenu="return false;"></video>
+                            <video class="block h-full w-full object-contain object-center" data-custom-player="true" preload="metadata" playsinline oncontextmenu="return false;">
+                                <source src="{{ asset('storage/' . $meme->image_path) }}" type="{{ $meme->video_mime_type }}">
+                            </video>
                         @else
                             <img src="{{ asset('storage/' . $meme->image_path) }}" alt="{{ $meme->title }}" class="block h-full w-full object-contain object-center">
                         @endif
