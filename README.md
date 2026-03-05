@@ -10,7 +10,6 @@ Current version: `v1.3.0`
 
 ## Documentation
 
-- Installation guide: [GitHub Wiki - Installation](https://github.com/Pashinoh/memehub/wiki/Installation)
 - Changelog: [CHANGELOG.md](CHANGELOG.md)
 
 ## License
