@@ -19,10 +19,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
             <!-- LEFT SIDE -->
-            <div class="flex items-center gap-10">
+            <div class="flex items-center gap-3 sm:gap-10">
                 <!-- Logo & Title -->
                 <a href="{{ route('memes.index') }}" class="flex items-center group">
-                    <span class="text-lg font-semibold tracking-wide uppercase text-white">MemeHub</span>
+                    <span class="text-base sm:text-lg font-semibold tracking-wide uppercase text-white">MemeHub</span>
                 </a>
                 <div class="hidden sm:flex items-center gap-2 ml-4 text-sm">
                     @php
@@ -175,13 +175,51 @@
             </div>
             <!-- MOBILE BUTTON -->
             <div class="sm:hidden">
-                <button @click="open = !open" class="p-2 text-slate-100">
+                <button @click="open = !open" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700 bg-slate-800 text-slate-100">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path x-show="!open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path x-show="open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
+        </div>
+
+        <div x-show="open" x-transition class="sm:hidden border-t border-slate-800 py-3 space-y-3" style="display: none;">
+            @php
+                $mobileSort = request('sort', 'for_you');
+                $mobileSort = in_array($mobileSort, ['for_you', 'fresh', 'trending'], true) ? $mobileSort : 'for_you';
+            @endphp
+
+            <div class="flex flex-wrap gap-2 text-sm">
+                <a href="{{ route('memes.index') }}" class="rounded-full border border-slate-700 bg-slate-800 px-3 py-1 text-slate-200">Home</a>
+                <a href="{{ route('memes.index', array_filter(['sort' => 'for_you', 'tag' => request('tag'), 'q' => request('q')])) }}" class="rounded-full border px-3 py-1 {{ $mobileSort === 'for_you' ? 'border-slate-500 bg-slate-200 text-slate-900' : 'border-slate-700 bg-slate-800 text-slate-200' }}">For You</a>
+                <a href="{{ route('memes.index', array_filter(['sort' => 'fresh', 'tag' => request('tag'), 'q' => request('q')])) }}" class="rounded-full border px-3 py-1 {{ $mobileSort === 'fresh' ? 'border-slate-500 bg-slate-200 text-slate-900' : 'border-slate-700 bg-slate-800 text-slate-200' }}">Fresh</a>
+                <a href="{{ route('memes.index', array_filter(['sort' => 'trending', 'tag' => request('tag'), 'q' => request('q')])) }}" class="rounded-full border px-3 py-1 {{ $mobileSort === 'trending' ? 'border-slate-500 bg-slate-200 text-slate-900' : 'border-slate-700 bg-slate-800 text-slate-200' }}">Trending</a>
+            </div>
+
+            <form action="{{ route('memes.index') }}" method="GET" class="flex items-center gap-2">
+                <input type="hidden" name="sort" value="{{ request('sort', 'for_you') }}">
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Search meme titles..." class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder-slate-400 focus:border-slate-500 focus:outline-none focus:ring-0">
+                <button type="submit" class="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200">Search</button>
+            </form>
+
+            @auth
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="{{ route('memes.index', ['upload' => 1]) }}" class="inline-flex items-center justify-center rounded-lg bg-slate-700 px-3 py-2 text-sm font-medium text-white">+ Upload</a>
+                    <a href="{{ route('users.show', Auth::user()) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200">Profile</a>
+                    <a href="{{ route('notifications.index') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200">Notifications</a>
+                    @if ($navIsAdmin)
+                        <a href="{{ route('admin.reports.index') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200">{{ __('ui.nav_moderation') }}</a>
+                    @else
+                        <a href="{{ route('settings') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200">Settings</a>
+                    @endif
+                </div>
+            @else
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('login') }}" class="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-center text-sm text-slate-200">Login</a>
+                    <a href="{{ route('auth.google.redirect') }}" class="w-full rounded-lg bg-slate-700 px-3 py-2 text-center text-sm text-white">Daftar</a>
+                </div>
+            @endauth
         </div>
     </div>
 </nav>

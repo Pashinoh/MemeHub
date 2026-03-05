@@ -23,7 +23,7 @@
         </header>
 
         <div class="mb-6" id="dev-banner">
-            <div class="flex items-center justify-between gap-3 rounded-xl border border-red-500/30 bg-red-600/90 px-4 py-3 text-sm text-white shadow-md">
+            <div class="flex flex-col items-start justify-between gap-3 rounded-xl border border-red-500/30 bg-red-600/90 px-4 py-3 text-sm text-white shadow-md sm:flex-row sm:items-center">
                 <div class="flex items-start gap-2">
                     <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-md border border-yellow-300/50 bg-yellow-400/20 text-yellow-100">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -35,7 +35,7 @@
                         {{ __('ui.dev_banner_message') }}
                     </p>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 self-end sm:self-auto">
                     @auth
                         <a href="{{ route('contact') }}" class="text-white underline hover:text-red-100">{{ __('ui.dev_banner_report') }}</a>
                     @else
