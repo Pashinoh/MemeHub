@@ -31,6 +31,14 @@ Current version: `v1.3.6`
 - **Media Compression**: Uploaded images are automatically converted to optimized WebP, and GIFs are resized and compressed to reduce server bandwidth usage.
 - **Database Indexed**: Search and feeds are optimized with indexes on `score` and `created_at`.
 
+## Screenshots
+
+| Feed / Home | Detail Meme |
+| :---: | :---: |
+| ![Feed](public/images/screenshot-feed.png) | ![Detail](public/images/screenshot-detail.png) |
+| **Login Page** | **Upload Modal** |
+| ![Login](public/images/screenshot-login.png) | ![Upload](public/images/screenshot-upload.png) |
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
