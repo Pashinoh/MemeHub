@@ -25,11 +25,15 @@ Current version: `v1.3.6`
    ```
 2. **Setup environment**:
    Copy `.env.example` to `.env` and configure your database (`DB_*`).
-3. **Run migrations & seeders**:
+3. **Run migrations**:
    ```bash
    php artisan migrate
    ```
-4. **Run development server**:
+4. **Create storage symlink** *(required for image uploads)*:
+   ```bash
+   php artisan storage:link
+   ```
+5. **Run development server**:
    ```bash
    php artisan serve
    ```
@@ -38,6 +42,11 @@ Current version: `v1.3.6`
 - **No Redis Dependency**: Default drivers are configured to use `file` and `database` for instant deployment.
 - **Media Compression**: Uploaded images are automatically converted to optimized WebP, and GIFs are resized and compressed to reduce server bandwidth usage.
 - **Database Indexed**: Search and feeds are optimized with indexes on `score` and `created_at`.
+
+## Server Requirements
+- PHP `^8.1` with extensions: **`gd`** or **`imagick`** (for image upload/WebP conversion), `fileinfo`, `pdo_mysql`
+- MySQL or MariaDB
+- Optional: `ffmpeg` for GIF & video compression
 
 ## License
 

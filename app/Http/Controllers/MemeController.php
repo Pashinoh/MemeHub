@@ -88,16 +88,25 @@ class MemeController extends Controller
         } elseif ($mimeType === 'image/gif') {
             $path = $this->storeLightweightGif($upload);
         } else {
-            $image = Image::make($upload)->orientate();
-            $image->resize(1280, 1280, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+            try {
+                $image = Image::make($upload)->orientate();
+                $image->resize(1280, 1280, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
 
-            $filename = Str::uuid() . '.webp';
-            $path = 'memes/' . $filename;
-            $imageQuality = max(50, min(90, (int) config('services.media.image_webp_quality', 74)));
-            Storage::disk('public')->put($path, $image->encode('webp', $imageQuality));
+                $filename = Str::uuid() . '.webp';
+                $path = 'memes/' . $filename;
+                $imageQuality = max(50, min(90, (int) config('services.media.image_webp_quality', 74)));
+                Storage::disk('public')->put($path, $image->encode('webp', $imageQuality));
+            } catch (\Exception $e) {
+                // Fallback: simpan file asli jika GD/Imagick tidak tersedia
+                Log::warning('Intervention Image gagal, fallback ke file asli: ' . $e->getMessage());
+                $ext = strtolower($upload->getClientOriginalExtension()) ?: 'jpg';
+                $filename = Str::uuid() . '.' . $ext;
+                $path = 'memes/' . $filename;
+                Storage::disk('public')->put($path, file_get_contents($upload->getRealPath()));
+            }
         }
 
         $meme = Meme::create([
