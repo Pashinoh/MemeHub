@@ -8,6 +8,14 @@ A Laravel-based meme-sharing platform with Google Login, media uploads, reportin
 
 Current version: `v1.3.6`
 
+## Screenshots
+
+| Feed / Home | Detail Meme |
+| :---: | :---: |
+| ![Feed](public/images/screenshot-feed.png) | ![Detail](public/images/screenshot-detail.png) |
+| **Login Page** | **Upload Modal** |
+| ![Login](public/images/screenshot-login.png) | ![Upload](public/images/screenshot-upload.png) |
+
 ## Quick Start (No Redis Needed)
 
 1. **Install dependencies**:
@@ -30,14 +38,6 @@ Current version: `v1.3.6`
 - **No Redis Dependency**: Default drivers are configured to use `file` and `database` for instant deployment.
 - **Media Compression**: Uploaded images are automatically converted to optimized WebP, and GIFs are resized and compressed to reduce server bandwidth usage.
 - **Database Indexed**: Search and feeds are optimized with indexes on `score` and `created_at`.
-
-## Screenshots
-
-| Feed / Home | Detail Meme |
-| :---: | :---: |
-| ![Feed](public/images/screenshot-feed.png) | ![Detail](public/images/screenshot-detail.png) |
-| **Login Page** | **Upload Modal** |
-| ![Login](public/images/screenshot-login.png) | ![Upload](public/images/screenshot-upload.png) |
 
 ## License
 
