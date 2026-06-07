@@ -18,9 +18,13 @@ class GoogleAuthController extends Controller
     public function redirect(): RedirectResponse
     {
         if (! $this->hasGoogleConfig()) {
-            return redirect()
-                ->route('login')
-                ->with('status', 'Konfigurasi Google login belum lengkap. Isi GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, dan GOOGLE_REDIRECT_URI di .env.');
+            if (config('app.debug')) {
+                return redirect()
+                    ->route('login')
+                    ->with('status', 'Konfigurasi Google login belum lengkap. Isi GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, dan GOOGLE_REDIRECT_URI di .env.');
+            }
+
+            return redirect()->route('login');
         }
 
         return Socialite::driver('google')->redirect();

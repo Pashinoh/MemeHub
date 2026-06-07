@@ -13,8 +13,10 @@ return new class extends Migration {
             $table->string('title');
             $table->string('slug')->unique();
             $table->string('image_path');
-            $table->unsignedInteger('score')->default(0);
+            $table->unsignedInteger('score')->default(0)->index();
             $table->timestamps();
+
+            $table->index('created_at');
         });
     }
 

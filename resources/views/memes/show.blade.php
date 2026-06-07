@@ -72,11 +72,11 @@
                                 <div class="relative z-10 w-full max-w-xs rounded-xl border border-slate-700 bg-slate-900 p-3 shadow-2xl" @click.stop>
                                     <p class="mb-2 text-sm font-semibold text-slate-100">Share</p>
                                     <div class="space-y-1">
-                                        <a href="https://wa.me/?text={{ rawurlencode($shareText . ' ' . $shareUrl) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span aria-hidden="true">🟢</span><span>WhatsApp</span></a>
-                                        <a href="https://t.me/share/url?url={{ rawurlencode($shareUrl) }}&text={{ rawurlencode($shareText) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span aria-hidden="true">🔵</span><span>Telegram</span></a>
-                                        <a href="https://twitter.com/intent/tweet?url={{ rawurlencode($shareUrl) }}&text={{ rawurlencode($shareText) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span aria-hidden="true">⚫</span><span>X</span></a>
-                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ rawurlencode($shareUrl) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span aria-hidden="true">🔷</span><span>Facebook</span></a>
-                                        <button type="button" class="mt-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm hover:bg-slate-800" @click="navigator.clipboard.writeText('{{ $shareUrl }}'); closeModal()"><span aria-hidden="true">🔗</span><span>Copy link</span></button>
+                                        <a href="https://wa.me/?text={{ rawurlencode($shareText . ' ' . $shareUrl) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span class="material-symbols-rounded text-green-500 text-sm">chat</span><span>WhatsApp</span></a>
+                                        <a href="https://t.me/share/url?url={{ rawurlencode($shareUrl) }}&text={{ rawurlencode($shareText) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span class="material-symbols-rounded text-sky-400 text-sm">send</span><span>Telegram</span></a>
+                                        <a href="https://twitter.com/intent/tweet?url={{ rawurlencode($shareUrl) }}&text={{ rawurlencode($shareText) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span class="material-symbols-rounded text-slate-400 text-sm">public</span><span>X</span></a>
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ rawurlencode($shareUrl) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span class="material-symbols-rounded text-blue-500 text-sm">group</span><span>Facebook</span></a>
+                                        <button type="button" class="mt-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm hover:bg-slate-800" @click="navigator.clipboard.writeText('{{ $shareUrl }}'); closeModal()"><span class="material-symbols-rounded text-slate-400 text-sm">link</span><span>Copy link</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -153,7 +153,10 @@
                 </div>
 
                 <div class="border-t border-slate-200 dark:border-slate-700 pt-6">
-                    <h2 class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100">💬 {{ $meme->comments_count }} Comments</h2>
+                    <h2 class="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100 flex items-center">
+                        <span class="material-symbols-rounded text-base align-middle mr-1.5">forum</span>
+                        <span>{{ $meme->comments_count }} Comments</span>
+                    </h2>
 
                     <div class="space-y-3 mb-6">
                         @forelse ($meme->comments as $comment)

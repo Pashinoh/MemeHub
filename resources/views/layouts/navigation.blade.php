@@ -37,11 +37,11 @@
                     $navSort = request('sort', 'for_you');
                     $navSort = in_array($navSort, ['for_you', 'fresh', 'trending'], true) ? $navSort : 'for_you';
                     $navInterestItems = [
-                        ['label' => 'Indonesia', 'tag' => 'indonesia', 'icon' => '🇮🇩'],
-                        ['label' => 'Anime', 'tag' => 'anime', 'icon' => '🎌'],
-                        ['label' => 'Gaming', 'tag' => 'gaming', 'icon' => '🎮'],
-                        ['label' => 'Dark Humor', 'tag' => 'dark-humor', 'icon' => '🖤'],
-                        ['label' => 'Memes', 'tag' => 'memes', 'icon' => '💎'],
+                        ['label' => 'Indonesia', 'tag' => 'indonesia', 'icon' => 'public'],
+                        ['label' => 'Anime', 'tag' => 'anime', 'icon' => 'auto_awesome'],
+                        ['label' => 'Gaming', 'tag' => 'gaming', 'icon' => 'sports_esports'],
+                        ['label' => 'Dark Humor', 'tag' => 'dark-humor', 'icon' => 'skull'],
+                        ['label' => 'Memes', 'tag' => 'memes', 'icon' => 'emoji_emotions'],
                     ];
                 @endphp
                 <!-- Logo & Title -->
@@ -78,7 +78,9 @@
                         <div class="space-y-1">
                             @foreach ($navInterestItems as $interest)
                                 <a href="{{ route('memes.index', array_filter(['tag' => $interest['tag'], 'sort' => $navSort, 'q' => request('q')])) }}" class="flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm transition {{ request('tag') === $interest['tag'] ? 'bg-slate-800 text-slate-100' : 'text-slate-300 hover:bg-slate-800 hover:text-slate-100' }}">
-                                    <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-slate-800 text-xs">{{ $interest['icon'] }}</span>
+                                    <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-slate-800 text-slate-300">
+                                        <span class="material-symbols-rounded text-sm">{{ $interest['icon'] }}</span>
+                                    </span>
                                     <span>{{ $interest['label'] }}</span>
                                 </a>
                             @endforeach

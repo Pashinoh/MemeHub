@@ -9,11 +9,11 @@
             'trending' => 'Trending memes',
         ][$activeSort];
         $interestItems = [
-            ['label' => 'Indonesia', 'tag' => 'indonesia', 'icon' => '🇮🇩'],
-            ['label' => 'Anime', 'tag' => 'anime', 'icon' => '🎌'],
-            ['label' => 'Gaming', 'tag' => 'gaming', 'icon' => '🎮'],
-            ['label' => 'Dark Humor', 'tag' => 'dark-humor', 'icon' => '🖤'],
-            ['label' => 'Memes', 'tag' => 'memes', 'icon' => '💎'],
+            ['label' => 'Indonesia', 'tag' => 'indonesia', 'icon' => 'public'],
+            ['label' => 'Anime', 'tag' => 'anime', 'icon' => 'auto_awesome'],
+            ['label' => 'Gaming', 'tag' => 'gaming', 'icon' => 'sports_esports'],
+            ['label' => 'Dark Humor', 'tag' => 'dark-humor', 'icon' => 'skull'],
+            ['label' => 'Memes', 'tag' => 'memes', 'icon' => 'emoji_emotions'],
         ];
     @endphp
     <div
@@ -296,7 +296,9 @@
                     <div class="space-y-1">
                         @foreach ($interestItems as $interest)
                             <a href="{{ route('memes.index', array_filter(['tag' => $interest['tag'], 'sort' => request('sort', 'for_you'), 'q' => request('q')])) }}" class="flex items-center gap-3 rounded-lg px-2 py-2 text-sm transition {{ request('tag') === $interest['tag'] ? 'bg-slate-800 text-slate-100' : 'text-slate-300 hover:bg-slate-800 hover:text-slate-100' }}">
-                                <span class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-slate-700 text-base">{{ $interest['icon'] }}</span>
+                                <span class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-slate-700 text-slate-300">
+                                    <span class="material-symbols-rounded text-base">{{ $interest['icon'] }}</span>
+                                </span>
                                 <span>{{ $interest['label'] }}</span>
                             </a>
                         @endforeach
@@ -444,11 +446,11 @@
                                         <div class="relative z-10 w-full max-w-xs rounded-xl border border-slate-700 bg-slate-900 p-3 shadow-2xl" @click.stop>
                                             <p class="mb-2 text-sm font-semibold text-slate-100">Share</p>
                                             <div class="space-y-1">
-                                                <a href="https://wa.me/?text={{ rawurlencode($shareText . ' ' . $shareUrl) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span aria-hidden="true">🟢</span><span>WhatsApp</span></a>
-                                                <a href="https://t.me/share/url?url={{ rawurlencode($shareUrl) }}&text={{ rawurlencode($shareText) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span aria-hidden="true">🔵</span><span>Telegram</span></a>
-                                                <a href="https://twitter.com/intent/tweet?url={{ rawurlencode($shareUrl) }}&text={{ rawurlencode($shareText) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span aria-hidden="true">⚫</span><span>X</span></a>
-                                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ rawurlencode($shareUrl) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span aria-hidden="true">🔷</span><span>Facebook</span></a>
-                                                <button type="button" class="mt-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm hover:bg-slate-800" @click="navigator.clipboard.writeText('{{ $shareUrl }}'); closeModal()"><span aria-hidden="true">🔗</span><span>Copy link</span></button>
+                                                <a href="https://wa.me/?text={{ rawurlencode($shareText . ' ' . $shareUrl) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span class="material-symbols-rounded text-green-500 text-sm">chat</span><span>WhatsApp</span></a>
+                                                <a href="https://t.me/share/url?url={{ rawurlencode($shareUrl) }}&text={{ rawurlencode($shareText) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span class="material-symbols-rounded text-sky-400 text-sm">send</span><span>Telegram</span></a>
+                                                <a href="https://twitter.com/intent/tweet?url={{ rawurlencode($shareUrl) }}&text={{ rawurlencode($shareText) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span class="material-symbols-rounded text-slate-400 text-sm">public</span><span>X</span></a>
+                                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ rawurlencode($shareUrl) }}" target="_blank" rel="noopener" class="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-800"><span class="material-symbols-rounded text-blue-500 text-sm">group</span><span>Facebook</span></a>
+                                                <button type="button" class="mt-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm hover:bg-slate-800" @click="navigator.clipboard.writeText('{{ $shareUrl }}'); closeModal()"><span class="material-symbols-rounded text-slate-400 text-sm">link</span><span>Copy link</span></button>
                                             </div>
                                         </div>
                                     </div>
